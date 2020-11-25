@@ -50,7 +50,7 @@ const App = () => {
     const names = persons.map(person => person.name.toLowerCase());
     
     if(names.includes(newName.toLowerCase())) {
-      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
         const person = persons.filter(p => p.name === newName)[0]
         const updatedPerson = {name: person.name, number: newNumber}
         handleUpdate(person.id, updatedPerson)
@@ -61,11 +61,12 @@ const App = () => {
       
       personService
         .create(newPerson)
-        .catch(e => toggleNotification(`${e}`, 'error'))
-
-      setPersons(newPersons);
-      setFilteredPersons(newPersons);
-      toggleNotification(`${newName} added`, 'success')
+        .then(createdPerson => {
+          setPersons(newPersons);
+          setFilteredPersons(newPersons);
+          toggleNotification(`${newName} added`, 'success')
+        })
+        .catch(e => toggleNotification(`${e.response.data.error}`, 'error'))
     }
   
     setNewNumber('');
