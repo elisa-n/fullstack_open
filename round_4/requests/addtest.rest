@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+//Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RpIiwiaWQiOiI1ZmJlYmE1ZjRlYzg3NDZmMzMwODZmMWMiLCJpYXQiOjE2MDYzNDQ2NTl9.ILDKgQTAoG5zNVqvLAkyut0xaEVBsOtn7Y4nTZlVnyo
+
+{
+  "title": "Nyt haluaisin nukkumaan",
+  "author": "Nukku Matti",
+  "url": "www.flow.com",
+  "likes": 13
+}

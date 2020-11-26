@@ -5,10 +5,12 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
   })
 
@@ -61,27 +63,31 @@ describe('when there is initially some blogs saved', () => {
   })
 
   test('a valid blog can be added', async () => {
+    const token = await helper.getTestToken(api)
     const newBlog = {
-      title: 'Jappadaida',
-      author: 'Jartsa',
+      title: 'Haluan nukkumaan',
+      author: 'Nukku Matti',
       url: 'http://google.fi',
-      likes: 69,
+      likes: 0,
     }
 
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(newBlog)
-      .expect(200)
+      .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
     const titles = blogsAtEnd.map(r => r.title)
-    expect(titles).toContain('Jappadaida')
+    expect(titles).toContain('Haluan nukkumaan')
   })
 
   test('a blog without title and url is not added', async () => {
+    const token = await helper.getTestToken(api)
+
     const newBlog = {
       author: 'Kantsu',
       likes: 3,
@@ -89,6 +95,7 @@ describe('when there is initially some blogs saved', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(newBlog)
       .expect(400)
 
@@ -97,6 +104,7 @@ describe('when there is initially some blogs saved', () => {
   })
 
   test('a blog with undefined likes is set 0 likes', async () => {
+    const token = await helper.getTestToken(api)
     const newBlog = {
       title: 'Memoires of Jarppa',
       author: 'Jarppa',
@@ -105,8 +113,9 @@ describe('when there is initially some blogs saved', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(newBlog)
-      .expect(200)
+      .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -137,22 +146,6 @@ describe('when there is initially some blogs saved', () => {
     const updatedBlog = blogsAtEnd[1]
 
     expect(updatedBlog.likes).toEqual(9)
-  })
-
-  test('a blog can be deleted', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
-
-    await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
-      .expect(204)
-
-    const blogsAtEnd = await helper.blogsInDb()
-
-    expect(blogsAtEnd).toHaveLength( helper.initialBlogs.length - 1)
-
-    const titles = blogsAtEnd.map(r => r.title)
-    expect(titles).not.toContain(blogToDelete.title)
   })
 })
 
