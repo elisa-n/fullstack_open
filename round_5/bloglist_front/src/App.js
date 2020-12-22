@@ -6,14 +6,14 @@ import Togglable from './components/Togglable'
 import ErrorNotification from './components/ErrorNotification'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
-import loginService from './services/login' 
+import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
@@ -22,7 +22,7 @@ const App = () => {
     blogService.getAll().then(blogs => {
       blogs.sort((a, b) => (a.likes < b.likes ? 1 : -1))
       setBlogs( blogs )
-    })  
+    })
   }, [])
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const App = () => {
   const removeBlog = (blogObject) => {
     blogService
       .remove(blogObject)
-      .then(res => {
+      .then(() => {
         setBlogs(blogs.filter(blog => blog !== blogObject))
       })
       .then(() => {
@@ -59,26 +59,26 @@ const App = () => {
         setTimeout(() => setErrorMessage(null), 5000)})
   }
 
-    const addLike = (blogObject) => {
-      const newLikes = blogObject.likes + 1
-      const newBlogObject = {
-        ...blogObject, likes: newLikes}
-      
-      blogService
-        .update(newBlogObject.id, newBlogObject)
-        .then(res => {
-          const updatedBlogs = blogs.map((blog) =>
-            blog.id === blogObject.id ? {...blog, likes: newLikes} : blog )
-          updatedBlogs.sort((a, b) => (a.likes < b.likes ? 1 : -1))
-          setBlogs(updatedBlogs)
-        })
-        .then(res => {
-          setNotification(`Liked the blog ${blogObject.title}`)
-          setTimeout(() => setNotification(null), 5000)})
-        .catch(e => {
-          setErrorMessage(e.message)
-          setTimeout(() => setErrorMessage(null), 5000)})
-    }
+  const addLike = (blogObject) => {
+    const newLikes = blogObject.likes + 1
+    const newBlogObject = {
+      ...blogObject, likes: newLikes }
+
+    blogService
+      .update(newBlogObject.id, newBlogObject)
+      .then(() => {
+        const updatedBlogs = blogs.map((blog) =>
+          blog.id === blogObject.id ? { ...blog, likes: newLikes } : blog )
+        updatedBlogs.sort((a, b) => (a.likes < b.likes ? 1 : -1))
+        setBlogs(updatedBlogs)
+      })
+      .then(() => {
+        setNotification(`Liked the blog ${blogObject.title}`)
+        setTimeout(() => setNotification(null), 5000)})
+      .catch(e => {
+        setErrorMessage(e.message)
+        setTimeout(() => setErrorMessage(null), 5000)})
+  }
 
 
   const handleLogin = async (event) => {
@@ -90,7 +90,7 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogAppUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -134,11 +134,11 @@ const App = () => {
     return(
       <div>
         <Togglable buttonLabel='new note' ref={blogFormRef}>
-          <BlogForm 
+          <BlogForm
             createBlog={addBlog} />
         </Togglable>
       </div>
-    )  
+    )
   }
 
   return (
@@ -147,9 +147,9 @@ const App = () => {
       <Notification message={notification} />
 
       {user === null ?
-      <div> 
-        {loginForm()} 
-      </div>
+        <div>
+          {loginForm()}
+        </div>
         :
         <div>
           <h2>Blogs</h2>
@@ -158,13 +158,13 @@ const App = () => {
             {logoutForm()}
           </div>
           <div>
-              {blogForm()}
+            {blogForm()}
           </div>
         </div>
-        }
+      }
       <div>
         {blogs.map(blog =>
-          <Blog 
+          <Blog
             key={blog.id}
             blog={blog}
             removeBlog={removeBlog}
