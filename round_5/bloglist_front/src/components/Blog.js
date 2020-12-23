@@ -34,21 +34,25 @@ const Blog = ({ blog, removeBlog, likeBlog }) => {
     }
   }
 
+  const blogInfo = () => (
+    <div style={showWhenVisible} className='blogInfo'>
+      {blog.url} <br />
+        likes: {blog.likes} <button style={buttonStyle} className='likeButton' onClick={() => likeBlog(blog)}>like</button><br />
+      {blog.user.name} <br />
+      <button style={removeStyle} onClick={() => handleRemoveBlog(blog)}>remove</button>
+    </div>
+  )
+
   return(
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blogPost'>
       {blog.title} {blog.author}
-      <button style={buttonStyle} onClick={toggleVisibility}>{visible ? 'hide' : 'show'}</button>
-      <div style={showWhenVisible}>
-        {blog.url} <br />
-          likes: {blog.likes} <button style={buttonStyle} onClick={() => likeBlog(blog)}>like</button><br />
-        {blog.user.name} <br />
-        <button style={removeStyle} onClick={() => handleRemoveBlog(blog)}>remove</button>
-      </div>
+      <button style={buttonStyle} className='visibilityButton' onClick={toggleVisibility}>{visible ? 'hide' : 'show'}</button>
+      {visible ? blogInfo() : ''}
     </div>
   )
 }
 
-Blog.PropTypes = {
+Blog.propTypes = {
   removeBlog: PropTypes.func.isRequired,
   likeBlog: PropTypes.func.isRequired,
   blog: PropTypes.object.isRequired
