@@ -10,7 +10,8 @@ module.exports = {
   ],
   'globals': {
     'window': true,
-    'module': true
+    'module': true,
+    'cy': true
   },
   'parserOptions': {
     'ecmaFeatures': {

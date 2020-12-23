@@ -39,7 +39,7 @@ const Blog = ({ blog, removeBlog, likeBlog }) => {
       {blog.url} <br />
         likes: {blog.likes} <button style={buttonStyle} className='likeButton' onClick={() => likeBlog(blog)}>like</button><br />
       {blog.user.name} <br />
-      <button style={removeStyle} onClick={() => handleRemoveBlog(blog)}>remove</button>
+      <button style={removeStyle} className='deleteButton' onClick={() => handleRemoveBlog(blog)}>remove</button>
     </div>
   )
 
